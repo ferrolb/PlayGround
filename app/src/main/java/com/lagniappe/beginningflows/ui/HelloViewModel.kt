@@ -2,6 +2,11 @@ package com.lagniappe.beginningflows.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -9,14 +14,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
+import javax.inject.Inject
 
 // You have a UserRepository that fetches user profiles from a remote
 // API and caches locally. Write the ViewModel function that exposes the
 // user profile to the UI using StateFlow, including error handling.
-class HelloViewModel (
-    val userId: String = "123",
+@HiltViewModel
+class HelloViewModel @Inject constructor(
     private val userRepository: UserRepository
 ): ViewModel() {
+    val userId: String = "123"
     val _viewState: StateFlow<HelloViewState> = MutableStateFlow(HelloViewState(UserProfile.Loading))
     val viewState: StateFlow<HelloViewState> = combine(
         _viewState,
@@ -29,6 +36,17 @@ class HelloViewModel (
         HelloViewState(UserProfile.Loading)
     )
 }
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class RepositoryModule {
+
+    @Binds
+    abstract fun bindUserRepository(
+        defaultUserRepository: DefaultUserRepository
+    ): UserRepository
+}
+
 data class HelloViewState(
     val userProfile: UserProfile,
 )
@@ -43,8 +61,13 @@ sealed interface UserProfile {
 
     data class Error(val exception: Throwable) : UserProfile
 }
-class UserRepository() {
-    fun getUserProfile(userId: String): Flow<UserProfile> {
+
+interface UserRepository{
+    fun getUserProfile(userId: String): Flow<UserProfile>
+}
+
+class DefaultUserRepository @Inject constructor(): UserRepository {
+    override fun getUserProfile(userId: String): Flow<UserProfile> {
         // Simulate network call and caching logic
         return flow {
             try {

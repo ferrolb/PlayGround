@@ -6,16 +6,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun HelloScreen(
     modifier: Modifier = Modifier,
     // TODO: Use Hilt to inject the ViewModel
-    viewModel: HelloViewModel = HelloViewModel(
-        userId = "123",
-        userRepository = UserRepository()
-    )
+    viewModel: HelloViewModel = viewModel()
 ) {
     val viewState = viewModel.viewState.collectAsState().value
     HelloScreen(
