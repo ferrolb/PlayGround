@@ -14,7 +14,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import com.lagniappe.beginningflows.ui.HelloScreen
+import com.lagniappe.beginningflows.ui.RickAndMortyScreen
 import com.lagniappe.beginningflows.ui.theme.BeginningFlowsTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -23,6 +27,7 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.Serializable
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -45,28 +50,49 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+// TODO: move these out to their own files
+@Serializable
+object HomeDestination
+@Serializable
+object RickAndMortyDestination
+
 @Composable
 fun Greeting(modifier: Modifier = Modifier) {
-    HelloScreen(modifier)
+    val navController = rememberNavController()
 
-    println("Where does this print")
-    runBlocking {
-        flowOf(1, 2, 3).collect { value ->
-            println("$value")
+    NavHost(navController = navController, startDestination = HomeDestination) {
+        composable<HomeDestination> {
+            HelloScreen(onButtonClick = {
+                navController.navigate(RickAndMortyDestination) {
+                    popUpTo(HomeDestination) { inclusive = true }
+                }
+            })
         }
-        delay(3000)
-        val myFlow = flow<String> {
-            emit("deezNuts")
-        }
-        myFlow.collect{ println("collect $it")}
-
+        composable<RickAndMortyDestination> { RickAndMortyScreen() }
+        // Add more destinations similarly.
     }
+
+ //   navController.navigate(route = HomeDestination)
+    //HelloScreen(modifier)
+
+//    println("Where does this print")
+//    runBlocking {
+//        flowOf(1, 2, 3).collect { value ->
+//            println("$value")
+//        }
+//        delay(3000)
+//        val myFlow = flow<String> {
+//            emit("deezNuts")
+//        }
+//        myFlow.collect{ println("collect $it")}
+//
+//    }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    BeginningFlowsTheme {
-        HelloScreen()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun GreetingPreview() {
+//    BeginningFlowsTheme {
+//        HelloScreen()
+//    }
+//}
