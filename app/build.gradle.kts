@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.dagger.hilt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.detekt)
 }
 
 android {
@@ -40,6 +41,10 @@ android {
     buildFeatures {
         compose = true
     }
+}
+
+detekt {
+    config = files("$rootDir/config/detekt/detekt.yml")
 }
 
 dependencies {

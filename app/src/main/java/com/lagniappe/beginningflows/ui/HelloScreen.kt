@@ -12,7 +12,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 @Composable
 fun HelloScreen(
     modifier: Modifier = Modifier,
-    // TODO: Use Hilt to inject the ViewModel
     onButtonClick: () -> Unit,
     viewModel: HelloViewModel = hiltViewModel<HelloViewModel>()
 ) {

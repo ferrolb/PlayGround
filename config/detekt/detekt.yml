@@ -1,0 +1,26 @@
+build:
+  maxIssues: 0
+
+style:
+  MagicNumber:
+    active: true
+  NewLineAtEndOfFile:
+    active: true
+  WildcardImport:
+    active: true
+
+naming:
+  FunctionNaming:
+    active: false  # Disabled for Compose functions which start with capital letters
+  VariableNaming:
+    active: true  # Allow custom variable naming
+  MemberNameEqualsClassName:
+    active: true
+
+exceptions:
+  TooGenericExceptionCaught:
+    active: true
+
+#comments:
+#  ForbiddenComment:
+#    active: false
